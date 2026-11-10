@@ -12,7 +12,7 @@ export const profile = {
   location: 'France',
   email: 'jamesdiaz319@gmail.com',
   linkedin: 'https://www.linkedin.com/in/james-melenge/',
-  github: '', // TODO: add your GitHub URL (the button is hidden while empty)
+  github: 'https://github.com/jmelenge10',
   cv: '/cv.pdf',
   about: [
     '10+ years of experience delivering digital transformation: planning, designing and running cloud, data, network and security solutions that drive business value, and leading migration projects from on-premises to the cloud.',
