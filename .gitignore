@@ -1,0 +1,34 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# personal source files (contain private contact details): never deploy
+private/
+
+# personal Claude Code instructions
+CLAUDE.local.md
+.claude/settings.local.json
+
+# personal Claude Code tooling (skills mention private strings)
+.claude/

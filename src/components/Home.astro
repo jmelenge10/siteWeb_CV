@@ -1,0 +1,196 @@
+---
+import Base from '../layouts/Base.astro';
+import ArchDiagram from './ArchDiagram.astro';
+import { content, ui, path, type Lang } from '../data/i18n';
+
+const { lang = 'en' } = Astro.props as { lang?: Lang };
+const t = ui[lang];
+const other: Lang = lang === 'en' ? 'fr' : 'en';
+const { profile, skills, experience, earlier, projects, certifications, education, honors, languages } = content(lang);
+
+const nav = Object.entries(t.nav);
+const year = new Date().getFullYear();
+const certTotal = certifications.reduce((n, g) => n + g.items.length, 0);
+---
+<Base lang={lang}>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="status">{profile.current}</span>
+      <nav aria-label={t.navLabel} class="toc">
+        <ul>
+          {nav.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <a class="lang-switch" href={path(other)} hreflang={other} lang={other} aria-label={t.otherLangLabel}>{t.otherLang}</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" data-light={t.toLight} data-dark={t.toDark}>{t.switchTheme}</button>
+    </div>
+  </header>
+
+  <main class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 lg:py-12">
+    <section class="panel" aria-label={t.intro}>
+      <div class="grid gap-10 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:items-center">
+        <div>
+          <h1 class="text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">{profile.name}</h1>
+          <p class="mono mt-5 text-lg text-accent">{profile.role}</p>
+          <p class="mt-6 max-w-[34ch] text-xl text-strong">{profile.tagline}</p>
+          <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+            <li><a href={profile.linkedin}>LinkedIn</a></li>
+            {profile.github && <li><a href={profile.github}>GitHub</a></li>}
+            <li><a href={profile.cv} download={t.cvFile}>{t.downloadCv}</a></li>
+          </ul>
+        </div>
+        <ArchDiagram lang={lang} />
+      </div>
+    </section>
+
+    <section id="about" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.about}</h2></div>
+      <div class="panel-body max-w-[68ch] space-y-5">
+        {profile.about.map((p) => <p>{p}</p>)}
+      </div>
+    </section>
+
+    <section id="skills" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.skills}</h2><span class="panel-meta">{t.groups(skills.length)}</span></div>
+      <dl class="panel-body grid gap-x-10 gap-y-6 md:grid-cols-2">
+        {skills.map((s) => (
+          <div>
+            <dt class="sub-title mb-2">{s.group}</dt>
+            <dd class="tags">{s.items.map((i) => <span class="tag">{i}</span>)}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section id="experience" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.experience}</h2><span class="panel-meta">{t.roles(experience.length)}</span></div>
+      <div class="panel-body">
+        <ol class="timeline">
+          {experience.map((e) => (
+            <li>
+              <p class="date">{e.period}</p>
+              <h3 class="sub-title">{e.role}, {e.company}</h3>
+              {e.note && <p class="mt-1 text-stone">{e.note}</p>}
+              <ul class="mt-3 list-disc space-y-2 pl-5 marker:text-stone">
+                {e.points.map((p) => <li>{p}</li>)}
+              </ul>
+            </li>
+          ))}
+        </ol>
+
+        <h3 class="sub-title mb-4 mt-12 border-t border-rule pt-8">{t.earlier}</h3>
+        <ol class="timeline">
+          {earlier.map((e) => (
+            <li>
+              <p class="date">{e.period}</p>
+              <p class="font-semibold text-strong">{e.company}, {e.role}</p>
+              <p class="mt-1 text-base">{e.summary}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section id="work" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.work}</h2><span class="panel-meta">{t.themes(projects.length)}</span></div>
+      <ul class="panel-body grid gap-x-10 gap-y-8 md:grid-cols-2">
+        {projects.map((p) => (
+          <li>
+            <h3 class="sub-title">{p.link ? <a href={p.link}>{p.name}</a> : p.name}</h3>
+            <p class="mt-1">{p.description}</p>
+            <p class="tags mt-3">{p.stack.map((t) => <span class="tag">{t}</span>)}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="certifications" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.certifications}</h2><span class="panel-meta">{t.credentials(certTotal)}</span></div>
+      <div class="panel-body grid gap-x-10 gap-y-8 md:grid-cols-2">
+        {certifications.map((g) => (
+          <div>
+            <h3 class="sub-title mb-1">{g.provider}</h3>
+            <ul>
+              {g.items.map((c) => (
+                <li class="cert">
+                  {c.tile
+                    ? <span class="tile"><img src={c.badge} alt="" loading="lazy" /></span>
+                    : <img src={c.badge} alt="" loading="lazy" />}
+                  <span class="text-strong">{c.name}</span>
+                  <span class="mono text-sm text-stone">{c.level}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="education" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.education}</h2></div>
+      <div class="panel-body">
+        <ol class="timeline">
+          {education.map((e) => (
+            <li>
+              <p class="date">{e.period}</p>
+              <p class="font-semibold text-strong">{e.degree}</p>
+              <p>{e.school}</p>
+            </li>
+          ))}
+        </ol>
+        <ul class="mt-8 space-y-1 border-t border-rule pt-6">
+          {honors.map((h) => <li>{h}</li>)}
+        </ul>
+        <p class="mt-6"><span class="font-semibold text-strong">{t.languages}</span> {languages.join(', ')}.</p>
+      </div>
+    </section>
+
+    <section id="contact" class="panel">
+      <div class="panel-head"><h2 class="panel-title">{t.nav.contact}</h2></div>
+      <div class="panel-body">
+        <p class="max-w-[62ch]">{t.contactText}</p>
+        <p class="mt-5 break-words text-2xl font-semibold sm:text-3xl"><a href={`mailto:${profile.email}`}>{profile.email}</a></p>
+        <p class="mt-5 space-x-6">
+          <a href={profile.linkedin}>LinkedIn</a>
+          {profile.github && <a href={profile.github}>GitHub</a>}
+          <a href={profile.cv} download={t.cvFile}>{t.downloadCv}</a>
+        </p>
+      </div>
+    </section>
+
+    <footer class="mono text-sm text-stone">© {year} {profile.name}. {t.built}</footer>
+  </main>
+
+  <script>
+    // Highlight the current section in the navigation
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    const byId = new Map(links.map((a) => [a.getAttribute('href')!.slice(1), a]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            links.forEach((a) => a.removeAttribute('aria-current'));
+            byId.get(e.target.id)?.setAttribute('aria-current', 'true');
+          }
+        }
+      },
+      { rootMargin: '-25% 0px -65% 0px' },
+    );
+    byId.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+    // Light / dark switch, remembered in the browser
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-toggle')!;
+    const current = () =>
+      root.dataset.theme ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    const label = () => { btn.textContent = current() === 'dark' ? btn.dataset.light! : btn.dataset.dark!; };
+    label();
+    btn.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch {}
+      label();
+    });
+  </script>
+</Base>

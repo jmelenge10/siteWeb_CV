@@ -1,0 +1,39 @@
+---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+import { content, path, ui, type Lang } from '../data/i18n';
+
+const { lang = 'en', page = '' } = Astro.props as { lang?: Lang; page?: string };
+const { profile } = content(lang);
+const { title = `${profile.name}, ${profile.role.toLowerCase()}`, description = profile.tagline } = Astro.props;
+const canonical = new URL(path(lang, page), Astro.site);
+const alt = (l: Lang) => new URL(path(l, page), Astro.site);
+---
+<!doctype html>
+<html lang={ui[lang].htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0f141a" />
+    <script is:inline>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={alt('en')} />
+    <link rel="alternate" hreflang="fr" href={alt('fr')} />
+    <link rel="alternate" hreflang="x-default" href={alt('en')} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

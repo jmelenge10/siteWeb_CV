@@ -1,0 +1,49 @@
+---
+import type { Lang } from '../data/i18n';
+const { lang = 'en' } = Astro.props as { lang?: Lang };
+const fr = lang === 'fr';
+// Hand-drawn platform diagram. Generic by design: it shows the stack described in the CV, no client data.
+---
+<figure class="diagram">
+  <svg viewBox="0 0 480 400" role="img" aria-labelledby="arch-t arch-d" class="w-full max-w-[34rem] overflow-visible">
+    <title id="arch-t">{fr ? 'Chaîne de livraison type' : 'Typical delivery path'}</title>
+    <desc id="arch-d">{fr ? 'Le code dans Git passe par un pipeline GitLab CI/CD jusqu’à Terraform, qui provisionne les clouds publics (AWS, Google Cloud, Azure, Scaleway, Outscale) et l’infrastructure on-premises (VMware, OpenShift, Linux). Kubernetes tourne par-dessus, et Prometheus et Grafana observent chaque environnement.' : 'Code in Git goes through a GitLab CI/CD pipeline to Terraform, which provisions public clouds (AWS, Google Cloud, Azure, Scaleway, Outscale) and on-premises infrastructure (VMware, OpenShift, Linux). Kubernetes runs on top, and Prometheus and Grafana observe every environment.'}</desc>
+
+    <g font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" text-anchor="middle">
+      <!-- Delivery path -->
+      <rect class="d-box" x="0" y="24" width="110" height="44" /><text class="d-text" x="55" y="51">{fr ? 'Dépôt Git' : 'Git repository'}</text>
+      <rect class="d-box" x="175" y="24" width="130" height="44" /><text class="d-text" x="240" y="51">GitLab CI/CD</text>
+      <rect class="d-box" x="340" y="24" width="130" height="44" /><text class="d-text" x="405" y="51">Terraform</text>
+
+      <!-- Targets -->
+      <rect class="d-box" x="0" y="140" width="310" height="82" />
+      <text class="d-sub" x="155" y="164" font-size="14">{fr ? 'Clouds publics' : 'Public clouds'}</text>
+      <text class="d-text" x="155" y="189">AWS, Google Cloud, Azure,</text>
+      <text class="d-text" x="155" y="210">Scaleway, Outscale</text>
+
+      <rect class="d-box" x="330" y="140" width="150" height="82" />
+      <text class="d-sub" x="405" y="164" font-size="14">On-premises</text>
+      <text class="d-text" x="405" y="189">VMware, OpenShift,</text>
+      <text class="d-text" x="405" y="210">Linux</text>
+
+      <!-- Platform -->
+      <rect class="d-box" x="0" y="256" width="480" height="44" />
+      <text class="d-text" x="240" y="283">Kubernetes: EKS, GKE, AKS, OpenShift</text>
+
+      <!-- Observability -->
+      <rect class="d-dash" x="0" y="340" width="480" height="40" />
+      <text class="d-sub" x="240" y="365">{fr ? 'Prometheus et Grafana sur tous les environnements' : 'Prometheus and Grafana across every environment'}</text>
+    </g>
+
+    <!-- Delivery path, the single accent, drawn once on load -->
+    <path class="d-flow flow" pathLength="1" d="M110 46 H175" />
+    <path class="d-flow flow" pathLength="1" style="animation-delay:.25s" d="M305 46 H340" />
+    <path class="d-flow flow" pathLength="1" style="animation-delay:.5s" d="M405 68 V104 M155 104 H405 M155 104 V140 M405 104 V140" />
+    <path class="d-flow flow" pathLength="1" style="animation-delay:.9s" d="M155 222 V256 M405 222 V256" />
+    <path class="d-arrow" d="M175 46 l-7 -4 v8 z M340 46 l-7 -4 v8 z" />
+    <path class="d-dots" d="M240 300 V340" />
+  </svg>
+  <figcaption class="mt-3 max-w-[34rem] text-sm text-stone">
+    {fr ? 'Une chaîne de livraison type dans mon travail : code, pipeline, Terraform, puis Kubernetes sur les clouds publics et on-premises.' : 'A typical delivery path in my work: code, pipeline, Terraform, then Kubernetes on public clouds and on-premises.'}
+  </figcaption>
+</figure>

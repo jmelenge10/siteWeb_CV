@@ -1,0 +1,68 @@
+---
+// Print-friendly CV, rendered to public/cv.pdf (EN) and public/cv-fr.pdf (FR). Contains NO phone number or street address.
+import { content, ui, type Lang } from '../data/i18n';
+
+const { lang = 'en' } = Astro.props as { lang?: Lang };
+const t = ui[lang];
+const { profile, skills, experience, earlier, certifications, education, honors, languages } = content(lang);
+---
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>{profile.name} – {t.cvTitle}</title>
+    <style>
+      @page { size: A4; margin: 14mm 15mm; }
+      * { box-sizing: border-box; }
+      body { font: 9.6pt/1.4 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a202c; margin: 0; }
+      h1 { font-size: 22pt; margin: 0; }
+      .sub { color: #047857; font-weight: 600; margin: 2px 0; }
+      .meta { color: #4a5568; font-size: 9pt; }
+      h2 { font-size: 10.5pt; letter-spacing: .12em; text-transform: uppercase; color: #047857; border-bottom: 1px solid #cbd5e0; padding-bottom: 2px; margin: 13px 0 6px; }
+      h3 { font-size: 10pt; margin: 8px 0 0; }
+      .period { color: #4a5568; font-weight: 400; font-size: 9pt; }
+      ul { margin: 3px 0 0; padding-left: 16px; }
+      li { margin: 1px 0; }
+      p { margin: 3px 0; }
+      .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+      section, li { break-inside: avoid; }
+    </style>
+  </head>
+  <body>
+    <h1>{profile.name}</h1>
+    <p class="sub">{profile.title}, {profile.headline}</p>
+    <p class="meta">{profile.email} · {profile.linkedin.replace('https://www.', '')} · {profile.location}</p>
+
+    <h2>{t.cvProfile}</h2>
+    {profile.about.map((p) => <p>{p}</p>)}
+
+    <h2>{t.cvExperience}</h2>
+    {experience.map((e) => (
+      <section>
+        <h3>{e.role}, {e.company} <span class="period">· {e.period}</span></h3>
+        <ul>{e.points.map((p) => <li>{p}</li>)}</ul>
+      </section>
+    ))}
+    <h3>{t.earlier}</h3>
+    <ul>{earlier.map((e) => <li><b>{e.company}</b> ({e.period}), {e.role}: {e.summary}</li>)}</ul>
+
+    <div class="cols">
+      <div>
+        <h2>{t.cvSkills}</h2>
+        <ul>{skills.map((s) => <li><b>{s.group}:</b> {s.items.join(', ')}</li>)}</ul>
+      </div>
+      <div>
+        <h2>{t.cvCerts}</h2>
+        <ul>
+          {certifications.flatMap((g) => g.items.map((c) => <li>{c.name} ({c.level})</li>))}
+        </ul>
+      </div>
+    </div>
+
+    <h2>{t.cvEducation}</h2>
+    <ul>{education.map((e) => <li><b>{e.degree}</b>, {e.school} <span class="period">· {e.period}</span></li>)}</ul>
+    <p><b>{t.cvHonors}:</b> {honors.join(' · ')}</p>
+    <p><b>{t.languages}:</b> {languages.join(' · ')}</p>
+  </body>
+</html>
