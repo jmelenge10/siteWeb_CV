@@ -78,4 +78,5 @@ if (hits.length) {
   console.error(`Privacy scan FAILED: ${hits.length} file(s) contain private details. Matched text is not shown on purpose.`);
   process.exit(1);
 }
-console.log(`Privacy scan passed: ${scanned} files checked, no private detail found.`);
+const pdfs = files.filter((f) => f.toLowerCase().endsWith('.pdf')).length - pdfSkipped;
+console.log(`::notice title=Privacy scan passed::${scanned} files checked (${pdfs} PDFs), no private detail found.`);
