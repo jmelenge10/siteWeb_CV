@@ -31,6 +31,17 @@ jobs:
         run: npm run check
       - name: Build
         run: npm run build
+      # The patterns (phone, address…) are private: they live in the PRIVACY_PATTERNS repository secret.
+      # The scan prints file names only, never the pattern or the matched text.
+      - name: Privacy scan
+        env:
+          PRIVACY_PATTERNS: ${{ secrets.PRIVACY_PATTERNS }}
+          # Without the secret the scan is skipped with a warning (Dependabot and forks cannot read secrets).
+          # Set the repository variable PRIVACY_SCAN_REQUIRED to 1 to make a missing secret fail on main.
+          PRIVACY_SCAN_REQUIRED: ${{ github.event_name == 'push' && vars.PRIVACY_SCAN_REQUIRED || '' }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils > /dev/null
+          node scripts/privacy-scan.mjs
       - name: Install browser
         run: npx playwright install --with-deps chromium
       - name: Browser tests

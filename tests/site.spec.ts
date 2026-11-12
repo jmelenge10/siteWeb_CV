@@ -113,6 +113,26 @@ for (const home of homes) {
   });
 }
 
+const address = /[\w.+-]+@[\w-]+\.[a-z]{2,}/i;
+
+for (const url of ['/', '/fr/', '/cv/', '/fr/cv/', '/does-not-exist']) {
+  test(`${url} source has no harvestable email address`, async ({ request }) => {
+    const html = await (await request.get(url)).text();
+    expect(html).not.toMatch(address);
+    expect(html).not.toContain('mailto:');
+  });
+}
+
+test('email links work in the browser', async ({ page }) => {
+  await page.goto('/');
+  const links = page.locator('a.email');
+  expect(await links.count()).toBe(2);
+  for (const link of await links.all()) {
+    await expect(link).toHaveAttribute('href', /^mailto:[\w.+-]+@[\w-]+\.[a-z]{2,}$/i);
+    expect(await link.innerText()).toMatch(address);
+  }
+});
+
 test('language switch goes both ways', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');

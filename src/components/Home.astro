@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ArchDiagram from './ArchDiagram.astro';
+import Email from './Email.astro';
 import { content, ui, path, type Lang } from '../data/i18n';
 
 const { lang = 'en' } = Astro.props as { lang?: Lang };
@@ -44,7 +45,7 @@ const certTotal = certifications.reduce((n, g) => n + g.items.length, 0);
           <p class="mt-6 max-w-[34ch] text-xl text-strong">{profile.tagline}</p>
           <p class="status mt-5">{profile.current}</p>
           <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
-            <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+            <li><Email address={profile.email} /></li>
             <li><a href={profile.linkedin}>LinkedIn</a></li>
             {profile.github && <li><a href={profile.github}>GitHub</a></li>}
             <li><a href={profile.cv} download={t.cvFile}>{t.downloadCv}</a></li>
@@ -163,7 +164,7 @@ const certTotal = certifications.reduce((n, g) => n + g.items.length, 0);
       <div class="panel-head"><h2 class="panel-title">{t.nav.contact}</h2></div>
       <div class="panel-body">
         <p class="max-w-[62ch]">{t.contactText}</p>
-        <p class="mt-5 break-words text-2xl font-semibold sm:text-3xl"><a href={`mailto:${profile.email}`}>{profile.email}</a></p>
+        <p class="mt-5 break-words text-2xl font-semibold sm:text-3xl"><Email address={profile.email} /></p>
         <p class="mt-5 space-x-6">
           <a href={profile.linkedin}>LinkedIn</a>
           {profile.github && <a href={profile.github}>GitHub</a>}
@@ -191,6 +192,11 @@ const certTotal = certifications.reduce((n, g) => n + g.items.length, 0);
       { rootMargin: '-25% 0px -65% 0px' },
     );
     byId.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+    // Email links: the address is split in the HTML (see Email.astro) and joined here
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('a.email')) {
+      a.href = `mailto:${a.dataset.user}@${a.dataset.domain}`;
+    }
 
     // Light / dark switch, remembered in the browser
     const root = document.documentElement;

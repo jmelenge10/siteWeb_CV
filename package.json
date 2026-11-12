@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test": "playwright test"
+    "test": "playwright test",
+    "privacy": "node scripts/privacy-scan.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

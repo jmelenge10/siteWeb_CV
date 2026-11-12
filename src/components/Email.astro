@@ -1,0 +1,15 @@
+---
+// The address is never written in one piece in the HTML, and there is no mailto: link in the source,
+// so simple address harvesters do not find it. The page script (Home.astro) adds the mailto: link
+// in the browser. Readers see and can copy the normal address.
+interface Props {
+  address: string;
+  /** Plain text only (for the printable CV, which has no script). */
+  plain?: boolean;
+}
+const { address, plain = false } = Astro.props;
+const [user, domain] = address.split('@');
+---
+{plain
+  ? <span>{user}<span>@</span>{domain}</span>
+  : <a class="email" data-user={user} data-domain={domain}>{user}<span>@</span>{domain}</a>}

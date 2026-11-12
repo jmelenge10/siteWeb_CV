@@ -62,6 +62,16 @@ GitHub Actions (`.github/workflows/ci.yml`) runs the type check, the build and t
 
 The Content-Security-Policy allows no inline scripts or styles, so keep scripts and styles in files.
 
+### Privacy scan
+
+`scripts/privacy-scan.mjs` fails the build if private details (phone number, street address) appear in the tracked files, the built site or the PDFs. The patterns are private, so they are not in this repository: CI reads them from the `PRIVACY_PATTERNS` repository secret (one regular expression). The scan prints file names only. Without the secret the scan is skipped with a warning; set the repository variable `PRIVACY_SCAN_REQUIRED` to `1` to make a missing secret fail on `main`.
+
+To run it locally: `PRIVACY_PATTERNS='pattern1|pattern2' npm run privacy` (PDFs are checked when `pdftotext` is installed).
+
+### Email address
+
+The address is split in the HTML and the `mailto:` link is added by the page script (`src/components/Email.astro`), so simple harvesters do not find it. It is still readable in the CV PDFs and in `src/data/profile.ts`.
+
 ## Deploy
 
 Cloudflare Pages builds on every push to `main`: build command `npm run build`, output directory `dist`, environment variable `NODE_VERSION=22`.

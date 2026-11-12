@@ -1,6 +1,7 @@
 ---
 // Print-friendly CV, rendered to public/cv.pdf (EN) and public/cv-fr.pdf (FR). Contains NO phone number or street address.
 import '../styles/cv.css';
+import Email from './Email.astro';
 import { content, ui, type Lang } from '../data/i18n';
 
 const { lang = 'en' } = Astro.props as { lang?: Lang };
@@ -17,7 +18,7 @@ const { profile, skills, experience, earlier, certifications, education, honors,
   <body>
     <h1>{profile.name}</h1>
     <p class="sub">{profile.title}, {profile.headline}</p>
-    <p class="meta">{profile.email} · {profile.linkedin.replace('https://www.', '')} · {profile.location}</p>
+    <p class="meta"><Email address={profile.email} plain /> · {profile.linkedin.replace('https://www.', '')} · {profile.location}</p>
 
     <h2>{t.cvProfile}</h2>
     {profile.about.map((p) => <p>{p}</p>)}
