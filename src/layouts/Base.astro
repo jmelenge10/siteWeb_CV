@@ -6,32 +6,73 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '../styles/global.css';
 import { content, path, ui, type Lang } from '../data/i18n';
 
-const { lang = 'en', page = '' } = Astro.props as { lang?: Lang; page?: string };
+interface Props {
+  lang?: Lang;
+  /** Page path without the language prefix: "" for the home page. */
+  page?: string;
+  title?: string;
+  description?: string;
+  /** Keep the page out of search engines and out of the language alternates (404, share image). */
+  noindex?: boolean;
+}
+
+const { lang = 'en', page = '', noindex = false } = Astro.props;
 const { profile } = content(lang);
+const t = ui[lang];
 const { title = `${profile.name}, ${profile.role.toLowerCase()}`, description = profile.tagline } = Astro.props;
-const canonical = new URL(path(lang, page), Astro.site);
-const alt = (l: Lang) => new URL(path(l, page), Astro.site);
+const abs = (p: string) => new URL(p, Astro.site).href;
+const canonical = abs(path(lang, page));
+
+// Structured data for search engines. Public information only: no phone number, no address.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  description: profile.tagline,
+  url: abs(path(lang)),
+  image: abs('/og.png'),
+  sameAs: [profile.linkedin, profile.github].filter(Boolean),
+  knowsLanguage: ['es', 'fr', 'en'],
+  address: { '@type': 'PostalAddress', addressCountry: 'FR' },
+};
 ---
 <!doctype html>
-<html lang={ui[lang].htmlLang}>
+<html lang={t.htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#0f141a" />
-    <script is:inline>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={alt('en')} />
-    <link rel="alternate" hreflang="fr" href={alt('fr')} />
-    <link rel="alternate" hreflang="x-default" href={alt('en')} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3f5f8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f141a" media="(prefers-color-scheme: dark)" />
+    {/* Applies the saved theme before the first paint. A file, not inline code, so the CSP can forbid inline scripts. */}
+    <script is:inline src="/theme.js"></script>
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <>
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang="en" href={abs(path('en', page))} />
+        <link rel="alternate" hreflang="fr" href={abs(path('fr', page))} />
+        <link rel="alternate" hreflang="x-default" href={abs(path('en', page))} />
+      </>
+    )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:locale" content={t.ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={abs('/og.png')} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {!noindex && <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />}
   </head>
   <body>
     <slot />

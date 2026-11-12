@@ -13,7 +13,11 @@ npm install
 npm run dev       # http://localhost:4321
 npm run build     # static output in dist/
 npm run preview   # serve dist/ locally
+npm run check     # type check (also checks that both languages have the same shape)
+npm test          # browser tests against the built site (run `npm run build` first)
 ```
+
+First time only, install the test browser: `npx playwright install chromium`.
 
 ## Where things are
 
@@ -21,6 +25,7 @@ npm run preview   # serve dist/ locally
 | --- | --- |
 | `src/data/profile.ts` | English content: profile, skills, experience, certifications, education |
 | `src/data/fr.ts` | French content, same shape |
+| `src/data/types.ts` | The shape both languages must follow |
 | `src/data/i18n.ts` | Interface strings and the language helpers |
 | `src/components/Home.astro` | The page, rendered for both languages |
 | `src/components/CvDoc.astro` | The printable CV, rendered for both languages |
@@ -28,6 +33,9 @@ npm run preview   # serve dist/ locally
 | `src/styles/global.css` | Theme tokens (light and dark) and component styles |
 | `public/cv.pdf`, `public/cv-fr.pdf` | Downloadable CVs |
 | `public/img/certs/` | Certification badges |
+| `public/_headers` | Security and cache headers applied by Cloudflare Pages |
+| `public/og.png` | Image shown when the site is shared, captured from the `/og` page |
+| `tests/site.spec.ts` | Playwright tests: pages, 404, languages, theme, layout widths, Content-Security-Policy |
 
 ## Regenerate the CV PDFs
 
@@ -39,6 +47,20 @@ CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 "$CHROME" --headless --no-pdf-header-footer --print-to-pdf=public/cv.pdf    http://localhost:4399/cv/
 "$CHROME" --headless --no-pdf-header-footer --print-to-pdf=public/cv-fr.pdf http://localhost:4399/fr/cv/
 ```
+
+## Regenerate the share image
+
+With the preview server running:
+
+```sh
+"$CHROME" --headless --hide-scrollbars --window-size=1200,630 --virtual-time-budget=5000 --screenshot=public/og.png http://localhost:4399/og/
+```
+
+## Checks
+
+GitHub Actions (`.github/workflows/ci.yml`) runs the type check, the build and the browser tests on every push and pull request.
+
+The Content-Security-Policy allows no inline scripts or styles, so keep scripts and styles in files.
 
 ## Deploy
 

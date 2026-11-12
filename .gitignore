@@ -32,3 +32,7 @@ CLAUDE.local.md
 
 # personal Claude Code tooling (skills mention private strings)
 .claude/
+
+# Playwright
+test-results/
+playwright-report/

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /cv/
+Disallow: /fr/cv/
+Disallow: /og/
+
+Sitemap: https://siteweb-cv.pages.dev/sitemap-index.xml

@@ -1,46 +1,24 @@
 @import "tailwindcss";
 
+/* Each colour is defined once as light-dark(light, dark). The scheme follows the system,
+   or the choice made with the switch (data-theme on <html>). */
 @theme {
-  --color-ground: #0f141a;
-  --color-panel: #161d26;
-  --color-head: #1d2632;
-  --color-rule: #2a3442;
-  --color-ink: #c7d2de;
-  --color-stone: #93a1b3;
-  --color-strong: #f2f6fa;
-  --color-accent: #f2a93b;
-  --color-ok: #46b98a;
+  --color-ground: light-dark(#f3f5f8, #0f141a);
+  --color-panel: light-dark(#ffffff, #161d26);
+  --color-head: light-dark(#e6ebf1, #1d2632);
+  --color-rule: light-dark(#cfd7e1, #2a3442);
+  --color-ink: light-dark(#2a3441, #c7d2de);
+  --color-stone: light-dark(#526173, #93a1b3);
+  --color-strong: light-dark(#0f141a, #f2f6fa);
+  --color-accent: light-dark(#a85f00, #f2a93b);
+  --color-ok: light-dark(#1f7a58, #46b98a);
   --font-sans: "IBM Plex Sans", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --radius-panel: 3px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    color-scheme: light;
-    --color-ground: #f3f5f8;
-    --color-panel: #ffffff;
-    --color-head: #e6ebf1;
-    --color-rule: #cfd7e1;
-    --color-ink: #2a3441;
-    --color-stone: #526173;
-    --color-strong: #0f141a;
-    --color-accent: #a85f00;
-    --color-ok: #1f7a58;
-  }
-}
-:root[data-theme="light"] {
-  color-scheme: light;
-  --color-ground: #f3f5f8;
-  --color-panel: #ffffff;
-  --color-head: #e6ebf1;
-  --color-rule: #cfd7e1;
-  --color-ink: #2a3441;
-  --color-stone: #526173;
-  --color-strong: #0f141a;
-  --color-accent: #a85f00;
-  --color-ok: #1f7a58;
-}
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
 
 html { scroll-behavior: smooth; background: var(--color-ground); }
@@ -61,26 +39,56 @@ a { color: var(--color-strong); text-decoration: underline; text-decoration-colo
 a:hover { text-decoration-thickness: 2px; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
 
-/* Top bar */
+/* Skip link: visible only when focused with the keyboard */
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 20; padding: 0.5rem 0.9rem; background: var(--color-panel); border: 2px solid var(--color-accent); border-radius: var(--radius-panel); }
+.skip:focus { top: 0.6rem; }
+main:focus { outline: none; }
+
+/* Top bar. Phones: name and buttons on the first row, sections on a second, scrollable row. */
 .topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--color-ground) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-rule); }
-.topbar-inner { display: flex; align-items: center; gap: 1rem; max-width: 72rem; margin: 0 auto; padding: 0.7rem 1.5rem; }
-.status { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-stone); white-space: nowrap; }
-.status { min-width: 0; max-width: 12rem; overflow: hidden; text-overflow: ellipsis; }
-@media (min-width: 64rem) { .topbar .toc { flex: 0 0 auto; margin-left: auto; overflow: visible; } .topbar .status { flex: 1 1 0; } }
-.status::before { content: ""; display: inline-block; margin-right: 0.55rem; vertical-align: 0.05em; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ok) 25%, transparent); }
-.toc { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-.toc ul { display: flex; gap: 0.25rem; }
+.topbar-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; max-width: 72rem; margin: 0 auto; padding: 0.6rem 1rem; }
+.brand { font-weight: 600; color: var(--color-strong); text-decoration: none; white-space: nowrap; }
+.topbar-actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
+.toc { order: 3; flex: 1 0 100%; min-width: 0; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent); }
+.toc::-webkit-scrollbar { display: none; }
+.toc ul { display: flex; gap: 0.25rem; padding-right: 2.5rem; }
 .toc a { display: block; padding: 0.3rem 0.55rem; border-radius: var(--radius-panel); color: var(--color-stone); text-decoration: none; font-size: 0.95rem; white-space: nowrap; }
 .toc a:hover { color: var(--color-strong); }
 .toc a[aria-current="true"] { color: var(--color-strong); background: var(--color-head); box-shadow: inset 0 -2px 0 var(--color-accent); font-weight: 600; }
 .lang-switch { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--color-strong); text-decoration: none; padding: 0.3rem 0.65rem; border: 1px solid var(--color-accent); border-radius: var(--radius-panel); white-space: nowrap; }
 .lang-switch:hover { background: var(--color-head); }
-.theme-toggle { font: inherit; font-size: 0.9rem; color: var(--color-stone); background: none; border: 1px solid var(--color-rule); border-radius: var(--radius-panel); padding: 0.3rem 0.7rem; cursor: pointer; white-space: nowrap; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 0.45rem; font: inherit; font-size: 0.9rem; color: var(--color-stone); background: none; border: 1px solid var(--color-rule); border-radius: var(--radius-panel); padding: 0.3rem 0.55rem; cursor: pointer; white-space: nowrap; }
 .theme-toggle:hover { color: var(--color-strong); border-color: var(--color-stone); }
-@media (max-width: 47.99rem) { .status { display: none; } .topbar-inner { padding-inline: 1rem; gap: 0.75rem; } }
+.theme-text { display: none; }
+/* Tablets: one row, the sections scroll if they do not fit */
+@media (min-width: 48rem) {
+  .topbar-inner { flex-wrap: nowrap; padding: 0.7rem 1.5rem; }
+  .brand { display: none; }
+  .toc { order: 0; flex: 1 1 auto; }
+}
+/* Desktop: everything fits, no scrolling or fade needed */
+@media (min-width: 64rem) {
+  .toc { flex: 0 1 auto; margin-left: auto; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .toc ul { padding-right: 0; }
+  .topbar-actions { margin-left: 0; }
+  .theme-text { display: inline; }
+}
+@media (min-width: 80rem) { .brand { display: block; } }
+
+/* Current role, with a status dot */
+.status { font-family: var(--font-mono); font-size: 0.9rem; color: var(--color-stone); max-width: 44ch; }
+.status::before { content: ""; display: inline-block; margin-right: 0.55rem; vertical-align: 0.05em; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ok) 25%, transparent); }
+
+/* About: two columns of text on wide screens */
+.about-text > p + p { margin-top: 1.25rem; }
+@media (min-width: 64rem) {
+  .about-text { columns: 2; column-gap: 3rem; }
+  .about-text > p { break-inside: avoid; }
+}
 
 /* Panels: a solid header bar makes each section easy to find */
-.panel { background: var(--color-panel); border: 1px solid var(--color-rule); border-radius: var(--radius-panel); scroll-margin-top: 4.5rem; overflow: hidden; }
+.panel { background: var(--color-panel); border: 1px solid var(--color-rule); border-radius: var(--radius-panel); scroll-margin-top: 6.5rem; overflow: hidden; }
+@media (min-width: 48rem) { .panel { scroll-margin-top: 4.5rem; } }
 .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.85rem 1.4rem; background: var(--color-head); border-bottom: 1px solid var(--color-rule); border-left: 4px solid var(--color-accent); }
 .panel-title { font-size: clamp(1.5rem, 2.6vw, 1.9rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
 .panel-meta { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-stone); white-space: nowrap; }
@@ -104,6 +112,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-accent); 
 .cert img { width: 3.5rem; height: 3.5rem; object-fit: contain; }
 .cert .tile { display: flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; padding: 0.6rem; background: #fff; border: 1px solid var(--color-rule); border-radius: var(--radius-panel); }
 .cert .tile img { width: 100%; height: 100%; }
+.verify { display: block; width: fit-content; font-family: var(--font-mono); font-size: 0.85rem; }
 @media (max-width: 29.99rem) { .cert { grid-template-columns: 3rem minmax(0, 1fr); } .cert > :last-child { grid-column: 2; } }
 
 /* Diagram (colours follow the theme) */
@@ -114,12 +123,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-accent); 
 .diagram .d-arrow { fill: var(--color-accent); }
 .diagram .d-dots { fill: none; stroke: var(--color-stone); stroke-dasharray: 2 4; }
 .diagram .d-dash { fill: none; stroke: var(--color-stone); stroke-dasharray: 3 4; }
-.diagram .d-ok { fill: var(--color-ok); }
 
 /* The single moment of motion: the delivery path draws itself once */
 .diagram .flow { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s cubic-bezier(.4,.1,.2,1) forwards; }
+.diagram .flow-2 { animation-delay: 0.25s; }
+.diagram .flow-3 { animation-delay: 0.5s; }
+.diagram .flow-4 { animation-delay: 0.9s; }
+/* One drawing per screen size */
+.diagram-wide { display: none; }
+@media (min-width: 40rem) { .diagram-wide { display: block; } .diagram-narrow { display: none; } }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .diagram .flow { animation: none; stroke-dashoffset: 0; }
 }
+
+/* Share image page (/og), captured at 1200 x 630 */
+.og { display: grid; grid-template-columns: 1fr 30rem; align-items: center; gap: 3.5rem; width: 1200px; height: 630px; padding: 0 4.5rem; border-left: 14px solid var(--color-accent); background: var(--color-panel); }
+.og h1 { font-size: 4.6rem; font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+.og-role { margin-top: 1.6rem; font-size: 1.6rem; color: var(--color-accent); }
+.og-line { margin-top: 1rem; font-size: 1.6rem; color: var(--color-strong); }
+.og-url { margin-top: 2.2rem; font-size: 1.15rem; color: var(--color-stone); }
+.og figcaption { display: none; }

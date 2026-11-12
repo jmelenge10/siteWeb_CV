@@ -1,0 +1,32 @@
+---
+// Source of public/og.png, the 1200 x 630 image shown when the site is shared (LinkedIn, chat apps).
+// After changing it: build, preview, then screenshot this page at 1200 x 630 (see README).
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+import ArchDiagram from '../components/ArchDiagram.astro';
+import { content } from '../data/i18n';
+
+const { profile } = content('en');
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=1200" />
+    <title>{profile.name}: share image</title>
+  </head>
+  <body>
+    <div class="og">
+      <div>
+        <h1>{profile.name}</h1>
+        <p class="mono og-role">{profile.role}</p>
+        <p class="og-line">{profile.headline}</p>
+        <p class="mono og-url">{new URL(Astro.site!).host}</p>
+      </div>
+      <ArchDiagram lang="en" />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import { path, ui } from '../data/i18n';
+
+// One page for both languages: the server cannot know which one the visitor wanted.
+const en = ui.en;
+const fr = ui.fr;
+---
+<Base title={`${en.notFoundTitle} / ${fr.notFoundTitle}`} noindex>
+  <main id="main" class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-4 py-12 sm:px-6">
+    <section class="panel">
+      <div class="panel-head"><h1 class="panel-title">{en.notFoundTitle}</h1><span class="panel-meta">404</span></div>
+      <div class="panel-body">
+        <p>{en.notFoundText}</p>
+        <p class="mt-3"><a href={path('en')}>{en.backHome}</a></p>
+      </div>
+    </section>
+    <section class="panel" lang="fr">
+      <div class="panel-head"><h2 class="panel-title">{fr.notFoundTitle}</h2><span class="panel-meta">404</span></div>
+      <div class="panel-body">
+        <p>{fr.notFoundText}</p>
+        <p class="mt-3"><a href={path('fr')}>{fr.backHome}</a></p>
+      </div>
+    </section>
+  </main>
+</Base>

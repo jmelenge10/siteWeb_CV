@@ -1,0 +1,15 @@
+/* Print layout of the CV pages (/cv and /fr/cv), which are printed to the PDFs. */
+@page { size: A4; margin: 14mm 15mm; }
+* { box-sizing: border-box; }
+body { font: 9.6pt/1.4 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a202c; margin: 0; }
+h1 { font-size: 22pt; margin: 0; }
+.sub { color: #047857; font-weight: 600; margin: 2px 0; }
+.meta { color: #4a5568; font-size: 9pt; }
+h2 { font-size: 10.5pt; letter-spacing: .12em; text-transform: uppercase; color: #047857; border-bottom: 1px solid #cbd5e0; padding-bottom: 2px; margin: 13px 0 6px; }
+h3 { font-size: 10pt; margin: 8px 0 0; }
+.period { color: #4a5568; font-weight: 400; font-size: 9pt; }
+ul { margin: 3px 0 0; padding-left: 16px; }
+li { margin: 1px 0; }
+p { margin: 3px 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+section, li { break-inside: avoid; }

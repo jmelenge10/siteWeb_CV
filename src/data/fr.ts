@@ -1,8 +1,9 @@
 // French content. Same shape as profile.ts (English). Shared, language-neutral data is reused from there.
 // No phone number or street address is published.
 import { profile as en, certifications as enCerts, projects as enProjects } from './profile';
+import type { Content, ProjectId } from './types';
 
-export const profile = {
+export const profile: Content['profile'] = {
   ...en,
   title: 'Architecte cloud et ingénieur DevOps senior',
   headline: 'Clouds publics et on-premises',
@@ -19,7 +20,7 @@ export const profile = {
   ],
 };
 
-export const skills: { group: string; items: string[] }[] = [
+export const skills: Content['skills'] = [
   { group: 'Clouds publics', items: ['AWS', 'GCP', 'Azure', 'Scaleway', 'Outscale'] },
   { group: 'On-premises', items: ['VMware', 'OpenShift', 'Kubernetes', 'Linux', 'Réseau datacenter'] },
   { group: 'Infrastructure as Code', items: ['Terraform', 'Helm'] },
@@ -30,7 +31,7 @@ export const skills: { group: string; items: string[] }[] = [
   { group: 'Langages', items: ['Go', 'Python', 'Bash'] },
 ];
 
-export const experience = [
+export const experience: Content['experience'] = [
   {
     role: 'Sr DevOps, Cloud & Data Architect',
     company: 'Deloitte France',
@@ -57,7 +58,7 @@ export const experience = [
   },
 ];
 
-export const earlier = [
+export const earlier: Content['earlier'] = [
   { period: '2021', role: 'Consulting Engineer Cloud, Telecom', company: 'setec', summary: 'Études d’appels d’offres réseau et télécom (WAN, LAN, IoT, cloud) et preuves de concept cloud avec business cases économiques.' },
   { period: '2020', role: 'IT Consultant / Cloud Engineer, DevOps', company: 'Nokia', summary: 'Conception sécurité, réseau et applications pour une migration d’infrastructure vers AWS, avec le business case pour l’approbation du budget.' },
   { period: '2018 – 2019', role: 'IT Consultant, Citrix', company: 'Itaú Colombia / Agilitix', summary: 'Migration de datacenter et architecture réseau avec Citrix NetScaler et répartiteurs de charge F5 pour des banques et des fournisseurs de services.' },
@@ -65,16 +66,14 @@ export const earlier = [
 ];
 
 // Derived from the experience above; replace with real projects (and links) when you have them.
-const projectText = [
-  { name: 'Modules Terraform réutilisables', description: 'Bibliothèque de modules réutilisables qui standardisent et automatisent le provisionnement des infrastructures et des environnements data sur plusieurs clouds.' },
-  { name: 'Plateformes Kubernetes multi-cloud', description: 'Plateformes conteneurisées pour le déploiement et l’exploitation évolutifs d’applications sur Kubernetes managé.' },
-  { name: 'Automatisation GitLab CI/CD', description: 'Pipelines couvrant le provisionnement, la configuration, les tests et le déploiement de l’infrastructure.' },
-  { name: 'Fiabilité et réduction des coûts', description: 'Refonte de systèmes IT et data pour améliorer la fiabilité et réduire les coûts, appuyée par les pratiques FinOps.' },
-];
-export const projects: { name: string; description: string; stack: string[]; link?: string }[] = enProjects.map((p, i) => ({
-  ...p,
-  ...projectText[i],
-}));
+const projectText: Record<ProjectId, { name: string; description: string }> = {
+  'terraform-modules': { name: 'Modules Terraform réutilisables', description: 'Bibliothèque de modules réutilisables qui standardisent et automatisent le provisionnement des infrastructures et des environnements data sur plusieurs clouds.' },
+  'k8s-platforms': { name: 'Plateformes Kubernetes multi-cloud', description: 'Plateformes conteneurisées pour le déploiement et l’exploitation évolutifs d’applications sur Kubernetes managé.' },
+  'gitlab-cicd': { name: 'Automatisation GitLab CI/CD', description: 'Pipelines couvrant le provisionnement, la configuration, les tests et le déploiement de l’infrastructure.' },
+  'reliability-cost': { name: 'Fiabilité et réduction des coûts', description: 'Refonte de systèmes IT et data pour améliorer la fiabilité et réduire les coûts, appuyée par les pratiques FinOps.' },
+};
+// Stack and links are shared with the English version; the text is matched by project id.
+export const projects: Content['projects'] = enProjects.map((p) => ({ ...p, ...projectText[p.id] }));
 
 const levels: Record<string, string> = {
   Professional: 'Professionnel',
@@ -83,23 +82,23 @@ const levels: Record<string, string> = {
   Training: 'Formation',
   Practitioner: 'Praticien',
 };
-export const certifications = enCerts.map((g) => ({
+export const certifications: Content['certifications'] = enCerts.map((g) => ({
   ...g,
   provider: g.provider === 'Kubernetes and FinOps' ? 'Kubernetes et FinOps' : g.provider,
   items: g.items.map((c) => ({ ...c, level: levels[c.level] ?? c.level })),
 }));
 
-export const education = [
+export const education: Content['education'] = [
   { degree: 'Formation continue, Management', school: 'HEC Paris', period: 'Juin – juil. 2025' },
   { degree: 'Diplôme d’ingénieur, Cloud Computing', school: 'IMT Atlantique (Telecom Bretagne)', period: '2019 – 2021' },
   { degree: 'Master en télécommunications mobiles', school: 'Universidad Distrital Francisco José de Caldas, Bogotá', period: '2018 – 2019' },
   { degree: 'Ingénieur électronicien', school: 'Universidad Distrital Francisco José de Caldas, Bogotá', period: '2011 – 2016' },
 ];
 
-export const honors = [
+export const honors: Content['honors'] = [
   'Bourse d’excellence Eiffel',
   'Mémoire de fin d’études distingué (mention méritoire)',
   'Distinction de premier rang avec mention, trois fois',
 ];
 
-export const languages = ['Espagnol (langue maternelle)', 'Français (professionnel)', 'Anglais (professionnel)'];
+export const languages: Content['languages'] = ['Espagnol (langue maternelle)', 'Français (professionnel)', 'Anglais (professionnel)'];
