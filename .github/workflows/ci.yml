@@ -18,7 +18,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - name: Install dependencies
+        run: |
+          node -v && npm -v
+          npm ci 2>&1 | tee npm-ci.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "::error title=npm ci failed (node $(node -v), npm $(npm -v))::$(grep -vE '^npm (warn|notice)' npm-ci.log | tail -n 20 | tr '\n' ' ' | cut -c1-1500)"
+            exit "$status"
+          fi
       - name: Type check
         run: npm run check
       - name: Build
